@@ -49,22 +49,15 @@ MCP Server for the Slack API, enabling Claude to interact with Slack workspaces.
      - `thread_ts` (string): Timestamp of the parent message
    - Returns: List of replies with their content and metadata
 
-7. `slack_search_messages`
-   - Search for messages across channels
-   - Required inputs:
-     - `query` (string): The search query
-   - Optional inputs:
-     - `count` (number, default: 5): Number of results to return
-   - Returns: Matching messages with their context
 
-8. `slack_get_users`
+7. `slack_get_users`
    - Get list of workspace users with basic profile information
    - Optional inputs:
      - `cursor` (string): Pagination cursor for next page
      - `limit` (number, default: 100, max: 200): Maximum users to return
    - Returns: List of users with their basic profiles
 
-9. `slack_get_user_profile`
+8. `slack_get_user_profile`
    - Get detailed profile information for a specific user
    - Required inputs:
      - `user_id` (string): The user's ID
@@ -96,14 +89,47 @@ MCP Server for the Slack API, enabling Claude to interact with Slack workspaces.
 
 Add the following to your `claude_desktop_config.json`:
 
+#### npx
+
 ```json
 {
-  "slack": {
-    "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-slack"],
-    "env": {
-      "SLACK_BOT_TOKEN": "xoxb-your-bot-token",
-      "SLACK_TEAM_ID": "T01234567"
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-bot-token",
+        "SLACK_TEAM_ID": "T01234567"
+      }
+    }
+  }
+}
+```
+
+#### docker
+
+```json
+{
+  "mcpServers": {
+    "slack": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "SLACK_BOT_TOKEN",
+        "-e",
+        "SLACK_TEAM_ID",
+        "mcp/slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-bot-token",
+        "SLACK_TEAM_ID": "T01234567"
+      }
     }
   }
 }
@@ -116,6 +142,14 @@ If you encounter permission errors, verify that:
 2. The app is properly installed to your workspace
 3. The tokens and workspace ID are correctly copied to your configuration
 4. The app has been added to the channels it needs to access
+
+## Build
+
+Docker build:
+
+```bash
+docker build -t mcp/slack -f src/slack/Dockerfile .
+```
 
 ## License
 
